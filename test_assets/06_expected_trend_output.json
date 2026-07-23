@@ -1,0 +1,16 @@
+{
+  "stage": "trend",
+  "patient_id": "22222222-2222-4222-8222-222222222222",
+  "trends": [],
+  "gaps": [],
+  "insufficient_data_metrics": [],
+  "processing_time_ms": 0,
+  "_notes": [
+    "This is the CORRECT expected TrendSet for this single report given the pipeline's current, documented behavior -- not a placeholder.",
+    "TrendAgent._build_current_points() (agents/trend/agent.py) skips every ExtractedEntity whose entity_date is None before a trend point is even built, and NERAgent never populates entity_date today (see agents/ner/agent.py module docstring: 'entity_date is always None here'). So none of the 11 coded lab entities in 05_expected_normalized_entities.json contribute a TrendPoint for this document.",
+    "Because _build_current_points() returns an empty dict for every canonical_code, _analyze_metric() is never called at all for this document, so metrics don't even reach the 'insufficient_data' branch (that branch is for metrics with fewer than the minimum required points, which still requires at least one dated point to exist) -- they simply produce no TrendObject and are absent from trends AND insufficient_data_metrics.",
+    "gaps is [] for the same reason: monitoring_gap_detected is only ever set inside _analyze_metric(), which never runs.",
+    "If/when NER is extended to populate entity_date (e.g. from 'Specimen Collected: 02/07/2026' or 'Report Date: 02/07/2026'), re-running this same document should start producing 11 TrendObject entries, each with direction=TrendDirection.insufficient_data (a single data point can't establish a direction) and statistical_confidence equal to that single point's coding_confidence (0.97 for all 11, since every entity here coded via coding_method='exact').",
+    "Regression-test recommendation: assert TrendSet.trends == [], .gaps == [], and .insufficient_data_metrics == [] for this fixture today. Add a second, dated fixture once entity_date support ships, and keep this one as the regression guard for the documented single-document/no-date behavior."
+  ]
+}

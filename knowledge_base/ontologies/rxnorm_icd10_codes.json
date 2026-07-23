@@ -1,0 +1,36 @@
+{
+  "rxnorm_codes": {
+    "Metformin": { "code": "6809", "display": "Metformin", "drug_class": "Biguanide", "aliases": ["metformin", "Glucophage", "Glumetza", "metformin hydrochloride", "metformin HCl"] },
+    "Lisinopril": { "code": "29046", "display": "Lisinopril", "drug_class": "ACE Inhibitor", "aliases": ["lisinopril", "Zestril", "Prinivil"] },
+    "Amlodipine": { "code": "17767", "display": "Amlodipine", "drug_class": "Calcium Channel Blocker", "aliases": ["amlodipine", "Norvasc", "amlodipine besylate"] },
+    "Atorvastatin": { "code": "83367", "display": "Atorvastatin", "drug_class": "Statin", "aliases": ["atorvastatin", "Lipitor", "atorvastatin calcium"] },
+    "Rosuvastatin": { "code": "301542", "display": "Rosuvastatin", "drug_class": "Statin", "aliases": ["rosuvastatin", "Crestor", "rosuvastatin calcium"] },
+    "Levothyroxine": { "code": "10582", "display": "Levothyroxine", "drug_class": "Thyroid Hormone", "aliases": ["levothyroxine", "Synthroid", "Eltroxin", "L-thyroxine", "LT4"] },
+    "Omeprazole": { "code": "7646", "display": "Omeprazole", "drug_class": "Proton Pump Inhibitor", "aliases": ["omeprazole", "Prilosec", "Losec"] },
+    "Aspirin": { "code": "1191", "display": "Aspirin", "drug_class": "NSAID/Antiplatelet", "aliases": ["aspirin", "acetylsalicylic acid", "ASA", "asprin"] },
+    "Losartan": { "code": "203160", "display": "Losartan", "drug_class": "ARB", "aliases": ["losartan", "Cozaar", "losartan potassium"] },
+    "Glibenclamide": { "code": "4815", "display": "Glibenclamide", "drug_class": "Sulfonylurea", "aliases": ["glibenclamide", "glyburide", "DiaBeta", "Micronase"] },
+    "Insulin Glargine": { "code": "274783", "display": "Insulin Glargine", "drug_class": "Long-acting Insulin", "aliases": ["insulin glargine", "Lantus", "Basaglar", "Toujeo", "glargine"] },
+    "Insulin Regular": { "code": "253182", "display": "Insulin Regular", "drug_class": "Short-acting Insulin", "aliases": ["regular insulin", "human insulin", "Actrapid", "Humulin R"] },
+    "Furosemide": { "code": "4603", "display": "Furosemide", "drug_class": "Loop Diuretic", "aliases": ["furosemide", "Lasix", "frusemide"] },
+    "Warfarin": { "code": "11289", "display": "Warfarin", "drug_class": "Anticoagulant", "aliases": ["warfarin", "Coumadin", "warfarin sodium"] },
+    "Simvastatin": { "code": "36567", "display": "Simvastatin", "drug_class": "Statin", "aliases": ["simvastatin", "Zocor"] },
+    "Ramipril": { "code": "35296", "display": "Ramipril", "drug_class": "ACE Inhibitor", "aliases": ["ramipril", "Altace", "Tritace"] },
+    "Carvedilol": { "code": "20352", "display": "Carvedilol", "drug_class": "Beta Blocker", "aliases": ["carvedilol", "Coreg"] },
+    "Bisoprolol": { "code": "19484", "display": "Bisoprolol", "drug_class": "Beta Blocker", "aliases": ["bisoprolol", "Zebeta", "bisoprolol fumarate"] },
+    "Allopurinol": { "code": "519", "display": "Allopurinol", "drug_class": "Xanthine Oxidase Inhibitor", "aliases": ["allopurinol", "Zyloprim", "Zyloric"] },
+    "Pantoprazole": { "code": "40790", "display": "Pantoprazole", "drug_class": "Proton Pump Inhibitor", "aliases": ["pantoprazole", "Protonix", "Pantoloc"] }
+  },
+  "icd10_codes": {
+    "Type 2 Diabetes": { "code": "E11.9", "display": "Type 2 diabetes mellitus without complications", "aliases": ["type 2 diabetes", "T2DM", "NIDDM", "diabetes mellitus type 2", "DM2"] },
+    "Hypertension": { "code": "I10", "display": "Essential (primary) hypertension", "aliases": ["hypertension", "HTN", "high blood pressure", "essential hypertension"] },
+    "CKD Stage 3": { "code": "N18.3", "display": "Chronic kidney disease, stage 3", "aliases": ["CKD stage 3", "chronic kidney disease stage 3", "CKD3"] },
+    "Hypothyroidism": { "code": "E03.9", "display": "Hypothyroidism, unspecified", "aliases": ["hypothyroidism", "underactive thyroid", "low thyroid", "hypothyroid"] },
+    "Dyslipidemia": { "code": "E78.5", "display": "Hyperlipidemia, unspecified", "aliases": ["dyslipidemia", "hyperlipidemia", "hypercholesterolemia", "elevated cholesterol"] },
+    "Anemia": { "code": "D64.9", "display": "Anaemia, unspecified", "aliases": ["anemia", "anaemia", "low hemoglobin"] },
+    "Atrial Fibrillation": { "code": "I48.91", "display": "Unspecified atrial fibrillation", "aliases": ["atrial fibrillation", "AFib", "AF", "a-fib"] },
+    "Heart Failure": { "code": "I50.9", "display": "Heart failure, unspecified", "aliases": ["heart failure", "CHF", "congestive heart failure", "cardiac failure"] },
+    "GERD": { "code": "K21.0", "display": "Gastro-esophageal reflux disease with esophagitis", "aliases": ["GERD", "acid reflux", "gastroesophageal reflux", "reflux disease"] },
+    "Gout": { "code": "M10.9", "display": "Gout, unspecified", "aliases": ["gout", "gouty arthritis", "hyperuricemia"] }
+  }
+}

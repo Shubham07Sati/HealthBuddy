@@ -1,0 +1,291 @@
+{
+  "document_id": "11111111-1111-4111-8111-111111111111",
+  "spans": [
+    {
+      "text": "SUNRISE DIAGNOSTICS LABORATORY",
+      "confidence": 0.97,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "header"
+    },
+    {
+      "text": "123 MG Road, Bengaluru, Karnataka 560001 | Phone: (080) 4123-9876 | CAP Accredited Lab #45219",
+      "confidence": 0.97,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "header"
+    },
+    {
+      "text": "LABORATORY REPORT",
+      "confidence": 0.97,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "header"
+    },
+    {
+      "text": "Patient Name: Arjun Mehta",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "DOB: 14/03/1979",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Age: 47 years old",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Sex: Male",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Patient ID: PID-778812",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "MRN: 8834127",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Hospital ID: HOSP-22190",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Phone: (555) 291-4470",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Email: arjun.mehta@examplemail.com",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Address: 45 Residency Road, Bengaluru",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Aadhaar: 4211 6690 3382",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "PAN: BPMPM4821K",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Referring Physician: Dr. Kavita Rao, MD, Nephrology",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Physician License: KMC-88213",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Specimen Collected: 02/07/2026 07:45",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Report Date: 02/07/2026 11:20",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "COMPLETE BLOOD COUNT (CBC)",
+      "confidence": 0.97,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "header"
+    },
+    {
+      "text": "Hemoglobin: 13.8 g/dL  (Normal range: 12.0 - 17.5)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "Hematocrit: 41.2 %  (Normal range: 36 - 50)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "WBC: 7.2 10^3/uL  (Normal range: 4.5 - 11.0)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "Platelets: 265 10^3/uL  (Normal range: 150 - 450)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "RBC: 4.9 million/uL  (Normal range: 4.5 - 5.9)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "MCV: 88 fL  (Normal range: 80 - 100)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "MCH: 29.5 pg  (Normal range: 27 - 33)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "MCHC: 33.4 g/dL  (Normal range: 32 - 36)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "DIABETES MONITORING",
+      "confidence": 0.97,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "header"
+    },
+    {
+      "text": "HbA1c: 6.8 %  (Normal: below 5.7, Prediabetes: 5.7 - 6.4, Diabetes: 6.5 and above)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "RENAL FUNCTION PANEL",
+      "confidence": 0.97,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "header"
+    },
+    {
+      "text": "Creatinine: 1.4 mg/dL  (Normal range: 0.6 - 1.3)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "eGFR: 58 mL/min/1.73m2  (Normal: 90 and above)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "LIPID PROFILE",
+      "confidence": 0.97,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "header"
+    },
+    {
+      "text": "Total Cholesterol: 224 mg/dL  (Desirable: below 200)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "LDL: 142 mg/dL  (Optimal: below 100)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "HDL: 38 mg/dL  (Desirable: above 40)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "Triglycerides: 210 mg/dL  (Normal: below 150)",
+      "confidence": 0.9,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "table_cell"
+    },
+    {
+      "text": "Clinical Notes: Patient reports fatigue. No evidence of chest pain. Denies smoking.",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    },
+    {
+      "text": "Electronically verified by Dr. Kavita Rao, MD. Not valid without laboratory letterhead and signature.",
+      "confidence": 0.93,
+      "bounding_box": null,
+      "page": 1,
+      "span_type": "text"
+    }
+  ],
+  "tables": [],
+  "full_text": "SUNRISE DIAGNOSTICS LABORATORY\n123 MG Road, Bengaluru, Karnataka 560001 | Phone: (080) 4123-9876 | CAP Accredited Lab #45219\nLABORATORY REPORT\nPatient Name: Arjun Mehta\nDOB: 14/03/1979\nAge: 47 years old\nSex: Male\nPatient ID: PID-778812\nMRN: 8834127\nHospital ID: HOSP-22190\nPhone: (555) 291-4470\nEmail: arjun.mehta@examplemail.com\nAddress: 45 Residency Road, Bengaluru\nAadhaar: 4211 6690 3382\nPAN: BPMPM4821K\nReferring Physician: Dr. Kavita Rao, MD, Nephrology\nPhysician License: KMC-88213\nSpecimen Collected: 02/07/2026 07:45\nReport Date: 02/07/2026 11:20\nCOMPLETE BLOOD COUNT (CBC)\nHemoglobin: 13.8 g/dL  (Normal range: 12.0 - 17.5)\nHematocrit: 41.2 %  (Normal range: 36 - 50)\nWBC: 7.2 10^3/uL  (Normal range: 4.5 - 11.0)\nPlatelets: 265 10^3/uL  (Normal range: 150 - 450)\nRBC: 4.9 million/uL  (Normal range: 4.5 - 5.9)\nMCV: 88 fL  (Normal range: 80 - 100)\nMCH: 29.5 pg  (Normal range: 27 - 33)\nMCHC: 33.4 g/dL  (Normal range: 32 - 36)\nDIABETES MONITORING\nHbA1c: 6.8 %  (Normal: below 5.7, Prediabetes: 5.7 - 6.4, Diabetes: 6.5 and above)\nRENAL FUNCTION PANEL\nCreatinine: 1.4 mg/dL  (Normal range: 0.6 - 1.3)\neGFR: 58 mL/min/1.73m2  (Normal: 90 and above)\nLIPID PROFILE\nTotal Cholesterol: 224 mg/dL  (Desirable: below 200)\nLDL: 142 mg/dL  (Optimal: below 100)\nHDL: 38 mg/dL  (Desirable: above 40)\nTriglycerides: 210 mg/dL  (Normal: below 150)\nClinical Notes: Patient reports fatigue. No evidence of chest pain. Denies smoking.\nElectronically verified by Dr. Kavita Rao, MD. Not valid without laboratory letterhead and signature.",
+  "avg_confidence": 0.9258,
+  "low_confidence_spans": [],
+  "ocr_engine": "paddleocr",
+  "processing_time_ms": 842
+}

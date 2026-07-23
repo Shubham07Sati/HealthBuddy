@@ -1,0 +1,108 @@
+{
+  "stage": "reasoning",
+  "_status": "MOCK / GOLDEN FIXTURE -- see _notes before using in CI",
+  "_notes": [
+    "ReasoningAgent.generate_insights() (agents/reasoning/agent.py) calls an actual LLM (settings.generator_model, default 'gpt-4o') via app.services.llm_provider with structured output enforced by `instructor`. An LLM call is not deterministic byte-for-byte even at temperature 0 across providers/versions, so this cannot be derived the way stages 1-4 were derived from the project's own deterministic code.",
+    "What IS deterministic and regression-testable: (a) the evidence_pool passed to the model, built by build_evidence_pool()/build_observation_evidence() from 05_expected_normalized_entities.json -- every 'obs-TEMP-XX' id and its text below is exactly what that function produces from this fixture set's coded entities (trend evidence is empty per 06_expected_trend_output.json, so only obs-* and guideline-* entries appear); and (b) the post-processing agent.py performs on whatever the LLM returns -- it drops any candidate citing an evidence_id outside the pool, and re-derives supporting_entity_ids from the cited evidence's entity_ids rather than trusting the model's own UUIDs (see agent.py module docstring).",
+    "'mock_llm_response' below is what a stubbed llm_provider.llm(...) call should return in a test (matching LLMInsightResponse's shape in agents/reasoning/models.py); 'expected_draft_insight_set' is the DraftInsightSet this codebase's own _to_draft_insights() would deterministically produce FROM that stubbed response plus the evidence pool -- so once llm_provider is mocked with 'mock_llm_response', this section becomes a legitimate exact-match regression assertion, not a guess.",
+    "supporting_entity_ids values are the real, currently-computable uuid5(NAMESPACE_URL, f'lmis:entity:{document_id}:{temp_id}') values for document_id=11111111-1111-4111-8111-111111111111 (see agents/reasoning/evidence.py::_entity_id_for and agents/trend/agent.py, which use the same scheme)."
+  ],
+  "evidence_pool_used": {
+    "obs-TEMP-01": "lab_value: 13.8 g/dL (reference range 12.0-17.5 g/dL) [LOINC 718-7]",
+    "obs-TEMP-02": "lab_value: 41.2 % [LOINC 4544-3]",
+    "obs-TEMP-03": "lab_value: 7.2 10^3/uL (reference range 4.5-11.0 10^3/uL) [LOINC 6690-2]",
+    "obs-TEMP-04": "lab_value: 265 10^3/uL [LOINC 777-3]",
+    "obs-TEMP-05": "lab_value: 6.8 % (reference range 4.0-5.6 %) [LOINC 4548-4]",
+    "obs-TEMP-06": "lab_value: 1.4 mg/dL (reference range 0.6-1.3 mg/dL) [LOINC 2160-0]",
+    "obs-TEMP-07": "lab_value: 58 mL/min/1.73m2 (reference range 90.0-999.0 mL/min/1.73m2) [LOINC 33914-3]",
+    "obs-TEMP-08": "lab_value: 224 mg/dL (reference range 0.0-200.0 mg/dL) [LOINC 2093-3]",
+    "obs-TEMP-09": "lab_value: 142 mg/dL (reference range 0.0-100.0 mg/dL) [LOINC 2089-1]",
+    "obs-TEMP-10": "lab_value: 38 mg/dL (reference range 40.0-999.0 mg/dL) [LOINC 2085-9]",
+    "obs-TEMP-11": "lab_value: 210 mg/dL [LOINC 2571-8]",
+    "guideline-ada-2024-hba1c-001": "An HbA1c of 6.5% or higher is consistent with a diagnosis of diabetes; 5.7-6.4% indicates prediabetes...",
+    "guideline-kdigo-2024-egfr-002": "An eGFR of 45-59 mL/min/1.73m2 corresponds to CKD stage G3a...",
+    "guideline-kdigo-2024-creat-003": "Elevated serum creatinine in conjunction with a reduced eGFR supports impaired glomerular filtration...",
+    "guideline-acc-aha-2018-ldl-004": "LDL-C of 130-159 mg/dL is borderline high...",
+    "guideline-acc-aha-2018-hdl-005": "HDL-C below 40 mg/dL in men is considered a risk-enhancing factor...",
+    "guideline-aha-2021-trig-006": "Triglycerides of 150-199 mg/dL are borderline high and 200-499 mg/dL are high..."
+  },
+  "mock_llm_response": {
+    "candidates": [
+      {
+        "text": "HbA1c is 6.8%, above the normal reference range and within the range diagnostic of diabetes per ADA criteria.",
+        "cited_evidence_ids": ["obs-TEMP-05", "guideline-ada-2024-hba1c-001"],
+        "severity": "moderate",
+        "insight_type": "risk_flag",
+        "patient_facing_text": "Your blood sugar control test (HbA1c) came back at 6.8%, which is higher than the healthy range. This can be an early sign of diabetes and is worth discussing with your doctor.",
+        "clinician_facing_text": "HbA1c 6.8% (ref 4.0-5.6%), within the ADA diabetes-range threshold (>=6.5%). Recommend confirmatory testing and clinical correlation; single measurement, no prior HbA1c available for trend comparison."
+      },
+      {
+        "text": "eGFR is reduced at 58 mL/min/1.73m2 with concurrently elevated creatinine at 1.4 mg/dL, a pattern consistent with reduced kidney function (CKD stage G3a).",
+        "cited_evidence_ids": ["obs-TEMP-07", "obs-TEMP-06", "guideline-kdigo-2024-egfr-002", "guideline-kdigo-2024-creat-003"],
+        "severity": "high",
+        "insight_type": "risk_flag",
+        "patient_facing_text": "Two of your kidney function tests (eGFR and creatinine) suggest your kidneys may not be filtering as well as expected. This is worth following up on with your doctor.",
+        "clinician_facing_text": "eGFR 58 mL/min/1.73m2 (ref >=90) with creatinine 1.4 mg/dL (ref 0.6-1.3), consistent with KDIGO CKD stage G3a. Single-timepoint result; recommend confirmatory eGFR/creatinine in >=90 days to establish chronicity per KDIGO."
+      },
+      {
+        "text": "Lipid profile shows elevated total cholesterol (224 mg/dL), elevated LDL (142 mg/dL), low HDL (38 mg/dL), and elevated triglycerides (210 mg/dL), an atherogenic pattern.",
+        "cited_evidence_ids": ["obs-TEMP-08", "obs-TEMP-09", "obs-TEMP-10", "obs-TEMP-11", "guideline-acc-aha-2018-ldl-004", "guideline-acc-aha-2018-hdl-005", "guideline-aha-2021-trig-006"],
+        "severity": "moderate",
+        "insight_type": "risk_flag",
+        "patient_facing_text": "Your cholesterol panel shows higher-than-desirable total cholesterol and LDL ('bad' cholesterol), lower HDL ('good' cholesterol), and higher triglycerides. This combination is linked to increased cardiovascular risk and is worth discussing with your doctor.",
+        "clinician_facing_text": "Atherogenic lipid pattern: TC 224 mg/dL (desirable <200), LDL 142 mg/dL (borderline high, ref 100-129 band), HDL 38 mg/dL (risk-enhancing, <40 in men), TG 210 mg/dL (high, ref 200-499 band). Consider ASCVD risk calculation and statin therapy per ACC/AHA 2018 guideline."
+      }
+    ]
+  },
+  "expected_draft_insight_set": {
+    "patient_id": "22222222-2222-4222-8222-222222222222",
+    "insights": [
+      {
+        "draft_id": "draft-001",
+        "text": "HbA1c is 6.8%, above the normal reference range and within the range diagnostic of diabetes per ADA criteria.",
+        "supporting_entity_ids": ["610a0bfd-0101-55f8-801a-00e3f44ef53f"],
+        "supporting_evidence_ids": ["obs-TEMP-05", "guideline-ada-2024-hba1c-001"],
+        "model_inference_flag": true,
+        "severity": "moderate",
+        "patient_facing_text": "Your blood sugar control test (HbA1c) came back at 6.8%, which is higher than the healthy range. This can be an early sign of diabetes and is worth discussing with your doctor.",
+        "clinician_facing_text": "HbA1c 6.8% (ref 4.0-5.6%), within the ADA diabetes-range threshold (>=6.5%). Recommend confirmatory testing and clinical correlation; single measurement, no prior HbA1c available for trend comparison.",
+        "insight_type": "risk_flag"
+      },
+      {
+        "draft_id": "draft-002",
+        "text": "eGFR is reduced at 58 mL/min/1.73m2 with concurrently elevated creatinine at 1.4 mg/dL, a pattern consistent with reduced kidney function (CKD stage G3a).",
+        "supporting_entity_ids": [
+          "08fb2c50-fbda-5dde-b6e8-77ff8ce3a841",
+          "0612fa0a-e976-5b9b-b632-310627eab5a2"
+        ],
+        "supporting_evidence_ids": ["obs-TEMP-07", "obs-TEMP-06", "guideline-kdigo-2024-egfr-002", "guideline-kdigo-2024-creat-003"],
+        "model_inference_flag": true,
+        "severity": "high",
+        "patient_facing_text": "Two of your kidney function tests (eGFR and creatinine) suggest your kidneys may not be filtering as well as expected. This is worth following up on with your doctor.",
+        "clinician_facing_text": "eGFR 58 mL/min/1.73m2 (ref >=90) with creatinine 1.4 mg/dL (ref 0.6-1.3), consistent with KDIGO CKD stage G3a. Single-timepoint result; recommend confirmatory eGFR/creatinine in >=90 days to establish chronicity per KDIGO.",
+        "insight_type": "risk_flag"
+      },
+      {
+        "draft_id": "draft-003",
+        "text": "Lipid profile shows elevated total cholesterol (224 mg/dL), elevated LDL (142 mg/dL), low HDL (38 mg/dL), and elevated triglycerides (210 mg/dL), an atherogenic pattern.",
+        "supporting_entity_ids": [
+          "658cb1f7-05f0-57c4-9b37-5d03a827f963",
+          "c2bdf486-ca8a-5fbe-857b-c6d0115fc6de",
+          "20167184-6d53-56cb-9b8b-ef9ad62c0e04",
+          "d169af76-3c5b-5a5f-a0f3-87351b6da463"
+        ],
+        "supporting_evidence_ids": [
+          "obs-TEMP-08", "obs-TEMP-09", "obs-TEMP-10", "obs-TEMP-11",
+          "guideline-acc-aha-2018-ldl-004", "guideline-acc-aha-2018-hdl-005", "guideline-aha-2021-trig-006"
+        ],
+        "model_inference_flag": true,
+        "severity": "moderate",
+        "patient_facing_text": "Your cholesterol panel shows higher-than-desirable total cholesterol and LDL ('bad' cholesterol), lower HDL ('good' cholesterol), and higher triglycerides. This combination is linked to increased cardiovascular risk and is worth discussing with your doctor.",
+        "clinician_facing_text": "Atherogenic lipid pattern: TC 224 mg/dL (desirable <200), LDL 142 mg/dL (borderline high, ref 100-129 band), HDL 38 mg/dL (risk-enhancing, <40 in men), TG 210 mg/dL (high, ref 200-499 band). Consider ASCVD risk calculation and statin therapy per ACC/AHA 2018 guideline.",
+        "insight_type": "risk_flag"
+      }
+    ],
+    "generator_model": "gpt-4o",
+    "_note_on_evidence_used": "evidence_used on the real DraftInsightSet would list every EvidenceItem whose id was actually cited by an accepted draft -- i.e. all 6 obs-* ids and all 6 guideline-* ids referenced above, each carrying its own relevance_score from the evidence pool (coding_confidence for obs-* items, the mock KnowledgeItem relevance_score for guideline-* items)."
+  }
+}

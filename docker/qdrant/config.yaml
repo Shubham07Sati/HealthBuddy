@@ -1,0 +1,19 @@
+log:
+  level: info
+
+storage:
+  storage_threshold_mbytes: 500
+  temp_path: /tmp/qdrant
+
+service:
+  grpc_port: 6334
+  enable_cors: true
+
+optimizers:
+  default_segment_number: 2
+  max_segment_size_kb: 20000
+
+hnsw_index:
+  m: 16
+  ef_construct: 100
+  full_scan_threshold: 10000

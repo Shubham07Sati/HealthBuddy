@@ -1,0 +1,138 @@
+{
+  "stage": "verification",
+  "_status": "MOCK / GOLDEN FIXTURE -- see _notes before using in CI",
+  "_notes": [
+    "VerificationAgent.verify_insights() (agents/verification/agent.py) also calls an LLM (settings.verifier_model, default 'gpt-4o') to decompose each DraftInsight into atomic assertions and check each against its cited evidence, so -- like the reasoning stage -- this cannot be hand-derived from purely deterministic code the way stages 1-4 were.",
+    "What IS deterministic given a stubbed verifier LLM response: verification_confidence = round(coverage * avg_verified_confidence, 4) where coverage = verified_count/total_count; verification_status is 'flagged' if any contradiction OR not all assertions verified OR confidence < 0.75, else 'auto_verified'; requires_clinician_review is True whenever status != 'auto_verified' OR severity is 'high'/'critical' (always True for high/critical regardless of verification outcome) -- see agent.py lines ~195-210. This fixture assumes every atomic assertion below the mock verifier returns is verified with no contradictions, which is the expected outcome given how directly each assertion is supported by 05_expected_normalized_entities.json and 07_expected_knowledge_topics.json.",
+    "This fixture consumes expected_draft_insight_set from 08_expected_reasoning_insights.json as its DraftInsightSet input -- draft-001 (HbA1c, moderate), draft-002 (CKD pattern, high), draft-003 (lipid panel, moderate)."
+  ],
+  "expected_verified_insight_set": {
+    "patient_id": "22222222-2222-4222-8222-222222222222",
+    "verified_insights": [
+      {
+        "draft_id": "draft-001",
+        "insight_db_id": null,
+        "final_text": "HbA1c is 6.8%, above the normal reference range and within the range diagnostic of diabetes per ADA criteria.",
+        "patient_facing_text": "Your blood sugar control test (HbA1c) came back at 6.8%, which is higher than the healthy range. This can be an early sign of diabetes and is worth discussing with your doctor.",
+        "clinician_facing_text": "HbA1c 6.8% (ref 4.0-5.6%), within the ADA diabetes-range threshold (>=6.5%). Recommend confirmatory testing and clinical correlation; single measurement, no prior HbA1c available for trend comparison.",
+        "verification_status": "auto_verified",
+        "verification_confidence": 0.9,
+        "verification_rationale": "3/3 atomic assertion(s) verified against cited evidence (coverage=1.00, avg confidence=0.90). No conflicting evidence found; HbA1c value, its deviation from the reference range, and the ADA diabetes-range threshold are all directly supported by obs-TEMP-05 and guideline-ada-2024-hba1c-001.",
+        "atomic_assertions": [
+          {
+            "assertion_text": "HbA1c is 6.8%.",
+            "verified": true,
+            "supporting_evidence": [{"evidence_id": "obs-TEMP-05", "source_type": "pso_entity", "source_ref": "11111111-1111-4111-8111-111111111111", "text": "lab_value: 6.8 % (reference range 4.0-5.6 %) [LOINC 4548-4]", "relevance_score": 0.97}],
+            "contradicting_evidence": [],
+            "confidence": 0.97
+          },
+          {
+            "assertion_text": "6.8% is above the normal reference range (4.0-5.6%).",
+            "verified": true,
+            "supporting_evidence": [{"evidence_id": "obs-TEMP-05", "source_type": "pso_entity", "source_ref": "11111111-1111-4111-8111-111111111111", "text": "lab_value: 6.8 % (reference range 4.0-5.6 %) [LOINC 4548-4]", "relevance_score": 0.97}],
+            "contradicting_evidence": [],
+            "confidence": 0.95
+          },
+          {
+            "assertion_text": "6.8% falls within the ADA diabetes-range threshold of 6.5% or higher.",
+            "verified": true,
+            "supporting_evidence": [{"evidence_id": "guideline-ada-2024-hba1c-001", "source_type": "retrieved_passage", "source_ref": "guideline-ada-2024-hba1c-001", "text": "An HbA1c of 6.5% or higher is consistent with a diagnosis of diabetes; 5.7-6.4% indicates prediabetes and warrants lifestyle intervention and repeat testing.", "relevance_score": 0.91}],
+            "contradicting_evidence": [],
+            "confidence": 0.88
+          }
+        ],
+        "rejected_assertions": [],
+        "severity": "moderate",
+        "requires_clinician_review": false
+      },
+      {
+        "draft_id": "draft-002",
+        "insight_db_id": null,
+        "final_text": "eGFR is reduced at 58 mL/min/1.73m2 with concurrently elevated creatinine at 1.4 mg/dL, a pattern consistent with reduced kidney function (CKD stage G3a).",
+        "patient_facing_text": "Two of your kidney function tests (eGFR and creatinine) suggest your kidneys may not be filtering as well as expected. This is worth following up on with your doctor.",
+        "clinician_facing_text": "eGFR 58 mL/min/1.73m2 (ref >=90) with creatinine 1.4 mg/dL (ref 0.6-1.3), consistent with KDIGO CKD stage G3a. Single-timepoint result; recommend confirmatory eGFR/creatinine in >=90 days to establish chronicity per KDIGO.",
+        "verification_status": "auto_verified",
+        "verification_confidence": 0.88,
+        "verification_rationale": "4/4 atomic assertion(s) verified against cited evidence (coverage=1.00, avg confidence=0.88). No conflicting evidence found. Severity is 'high', so clinician review is required regardless of verification outcome.",
+        "atomic_assertions": [
+          {
+            "assertion_text": "eGFR is 58 mL/min/1.73m2, below the reference range of 90 and above.",
+            "verified": true,
+            "supporting_evidence": [{"evidence_id": "obs-TEMP-07", "source_type": "pso_entity", "source_ref": "11111111-1111-4111-8111-111111111111", "text": "lab_value: 58 mL/min/1.73m2 (reference range 90.0-999.0 mL/min/1.73m2) [LOINC 33914-3]", "relevance_score": 0.97}],
+            "contradicting_evidence": [],
+            "confidence": 0.95
+          },
+          {
+            "assertion_text": "Creatinine is 1.4 mg/dL, above the reference range of 0.6-1.3 mg/dL.",
+            "verified": true,
+            "supporting_evidence": [{"evidence_id": "obs-TEMP-06", "source_type": "pso_entity", "source_ref": "11111111-1111-4111-8111-111111111111", "text": "lab_value: 1.4 mg/dL (reference range 0.6-1.3 mg/dL) [LOINC 2160-0]", "relevance_score": 0.97}],
+            "contradicting_evidence": [],
+            "confidence": 0.95
+          },
+          {
+            "assertion_text": "An eGFR of 45-59 mL/min/1.73m2 corresponds to CKD stage G3a.",
+            "verified": true,
+            "supporting_evidence": [{"evidence_id": "guideline-kdigo-2024-egfr-002", "source_type": "retrieved_passage", "source_ref": "guideline-kdigo-2024-egfr-002", "text": "An eGFR of 45-59 mL/min/1.73m2 corresponds to CKD stage G3a (mild-to-moderate reduction in kidney function) and should prompt confirmatory retesting and evaluation for underlying cause.", "relevance_score": 0.89}],
+            "contradicting_evidence": [],
+            "confidence": 0.85
+          },
+          {
+            "assertion_text": "Elevated creatinine alongside reduced eGFR supports impaired glomerular filtration.",
+            "verified": true,
+            "supporting_evidence": [{"evidence_id": "guideline-kdigo-2024-creat-003", "source_type": "retrieved_passage", "source_ref": "guideline-kdigo-2024-creat-003", "text": "Elevated serum creatinine in conjunction with a reduced eGFR supports impaired glomerular filtration and should be interpreted alongside prior baseline values where available.", "relevance_score": 0.82}],
+            "contradicting_evidence": [],
+            "confidence": 0.78
+          }
+        ],
+        "rejected_assertions": [],
+        "severity": "high",
+        "requires_clinician_review": true
+      },
+      {
+        "draft_id": "draft-003",
+        "insight_db_id": null,
+        "final_text": "Lipid profile shows elevated total cholesterol (224 mg/dL), elevated LDL (142 mg/dL), low HDL (38 mg/dL), and elevated triglycerides (210 mg/dL), an atherogenic pattern.",
+        "patient_facing_text": "Your cholesterol panel shows higher-than-desirable total cholesterol and LDL ('bad' cholesterol), lower HDL ('good' cholesterol), and higher triglycerides. This combination is linked to increased cardiovascular risk and is worth discussing with your doctor.",
+        "clinician_facing_text": "Atherogenic lipid pattern: TC 224 mg/dL (desirable <200), LDL 142 mg/dL (borderline high, ref 100-129 band), HDL 38 mg/dL (risk-enhancing, <40 in men), TG 210 mg/dL (high, ref 200-499 band). Consider ASCVD risk calculation and statin therapy per ACC/AHA 2018 guideline.",
+        "verification_status": "auto_verified",
+        "verification_confidence": 0.85,
+        "verification_rationale": "4/4 atomic assertion(s) verified against cited evidence (coverage=1.00, avg confidence=0.85). No conflicting evidence found.",
+        "atomic_assertions": [
+          {
+            "assertion_text": "Total cholesterol is 224 mg/dL, above the desirable threshold of 200 mg/dL.",
+            "verified": true,
+            "supporting_evidence": [{"evidence_id": "obs-TEMP-08", "source_type": "pso_entity", "source_ref": "11111111-1111-4111-8111-111111111111", "text": "lab_value: 224 mg/dL (reference range 0.0-200.0 mg/dL) [LOINC 2093-3]", "relevance_score": 0.97}],
+            "contradicting_evidence": [],
+            "confidence": 0.95
+          },
+          {
+            "assertion_text": "LDL is 142 mg/dL, in the borderline-high range.",
+            "verified": true,
+            "supporting_evidence": [{"evidence_id": "guideline-acc-aha-2018-ldl-004", "source_type": "retrieved_passage", "source_ref": "guideline-acc-aha-2018-ldl-004", "text": "LDL-C of 130-159 mg/dL is borderline high; combined with additional risk factors it supports consideration of statin therapy per the pooled cohort risk calculator.", "relevance_score": 0.85}],
+            "contradicting_evidence": [],
+            "confidence": 0.82
+          },
+          {
+            "assertion_text": "HDL is 38 mg/dL, below the 40 mg/dL risk-enhancing threshold for men.",
+            "verified": true,
+            "supporting_evidence": [{"evidence_id": "guideline-acc-aha-2018-hdl-005", "source_type": "retrieved_passage", "source_ref": "guideline-acc-aha-2018-hdl-005", "text": "HDL-C below 40 mg/dL in men (below 50 mg/dL in women) is considered a risk-enhancing factor for atherosclerotic cardiovascular disease.", "relevance_score": 0.78}],
+            "contradicting_evidence": [],
+            "confidence": 0.8
+          },
+          {
+            "assertion_text": "Triglycerides are 210 mg/dL, in the high range.",
+            "verified": true,
+            "supporting_evidence": [{"evidence_id": "guideline-aha-2021-trig-006", "source_type": "retrieved_passage", "source_ref": "guideline-aha-2021-trig-006", "text": "Triglycerides of 150-199 mg/dL are borderline high and 200-499 mg/dL are high; levels in this range warrant dietary counseling and reassessment of overall lipid panel.", "relevance_score": 0.74}],
+            "contradicting_evidence": [],
+            "confidence": 0.72
+          }
+        ],
+        "rejected_assertions": [],
+        "severity": "moderate",
+        "requires_clinician_review": false
+      }
+    ],
+    "rejected_insights": [],
+    "verifier_model": "gpt-4o"
+  }
+}

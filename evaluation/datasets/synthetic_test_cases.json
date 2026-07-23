@@ -1,0 +1,88 @@
+{
+  "synthetic_patients": [
+    {
+      "patient_id": "syn-001",
+      "description": "62-year-old male with T2DM, hypertension, and CKD Stage 3. Demonstrates rising creatinine trend and HbA1c management.",
+      "demographics": {
+        "date_of_birth": "1962-03-15",
+        "sex": "M",
+        "blood_type": "A+"
+      },
+      "known_conditions": ["E11.9", "I10", "N18.3"],
+      "known_medications": ["Metformin 1000mg BD", "Lisinopril 10mg OD", "Atorvastatin 40mg ON"]
+    },
+    {
+      "patient_id": "syn-002",
+      "description": "47-year-old female with hypothyroidism and dyslipidemia. Demonstrates TSH fluctuation and LDL response to statin therapy.",
+      "demographics": {
+        "date_of_birth": "1977-08-22",
+        "sex": "F",
+        "blood_type": "O+"
+      },
+      "known_conditions": ["E03.9", "E78.5"],
+      "known_medications": ["Levothyroxine 75mcg OD", "Rosuvastatin 20mg OD"]
+    }
+  ],
+  "test_documents": [
+    {
+      "document_id": "test-doc-001",
+      "patient_id": "syn-001",
+      "type": "lab_report",
+      "description": "CBC + Metabolic Panel — 2024-01-15. Clean typed PDF. Expected entities: Hemoglobin 12.1 g/dL (low), Creatinine 1.8 mg/dL (high), eGFR 42 mL/min/1.73m2, Potassium 5.1 mEq/L, HbA1c 7.4%.",
+      "planted_issues": [],
+      "expected_trend_contribution": "Creatinine rising trend (third data point above normal)"
+    },
+    {
+      "document_id": "test-doc-002",
+      "patient_id": "syn-001",
+      "type": "lab_report",
+      "description": "Lipid Panel — 2024-01-15. Clean typed PDF with ambiguous LDL value (two readings on same page).",
+      "planted_issues": ["intra_document_conflict: LDL listed as 98 mg/dL in result table but 148 mg/dL in summary paragraph"],
+      "expected_ner_flag": "ambiguous entity — requires human confirmation"
+    },
+    {
+      "document_id": "test-doc-003",
+      "patient_id": "syn-001",
+      "type": "handwritten",
+      "description": "Handwritten GP prescription. Metformin 1000mg BD + Lisinopril 10mg. Low-quality handwriting, OCR challenge.",
+      "planted_issues": ["OCR confidence expected < 0.75 for dosage field"],
+      "expected_routing": "handwriting_ocr path, high correction queue rate"
+    },
+    {
+      "document_id": "test-doc-004",
+      "patient_id": "syn-002",
+      "type": "lab_report",
+      "description": "TSH result in mmol/L (non-standard unit). Tests unit normalization pipeline.",
+      "planted_issues": ["unit_normalization_required: TSH reported as 0.0038 mmol/L instead of mIU/L"],
+      "expected_normalization": "Convert to 3.8 mIU/L"
+    },
+    {
+      "document_id": "test-doc-005",
+      "patient_id": "syn-001",
+      "type": "lab_report",
+      "description": "DELIBERATELY contains a hallucination bait: document mentions Potassium 6.8 mEq/L (critical high). Tests critical value escalation rule.",
+      "planted_issues": ["critical_value: K+ 6.8 mEq/L should trigger immediate_clinician_review"],
+      "expected_escalation": "requires_clinician_review=True, auto-escalation by Orchestration Agent"
+    }
+  ],
+  "evaluation_schema": {
+    "ner_evaluation": {
+      "metrics": ["precision", "recall", "f1", "partial_match_f1"],
+      "entity_types": ["medication", "lab_value", "diagnosis", "dosage", "unit", "date"],
+      "required_sample_size": 50
+    },
+    "normalization_evaluation": {
+      "metrics": ["code_accuracy", "unit_conversion_accuracy", "reference_range_correctness"],
+      "required_sample_size": 30
+    },
+    "trend_evaluation": {
+      "metrics": ["trend_direction_accuracy", "false_positive_trend_rate", "change_point_precision"],
+      "required_labeled_series": 20
+    },
+    "verification_evaluation": {
+      "metrics": ["hallucination_reduction_rate", "dangerous_omission_rate", "precision_of_stripped_claims"],
+      "baselines": ["single_pass_llm", "rag_only"],
+      "required_insight_pairs": 100
+    }
+  }
+}

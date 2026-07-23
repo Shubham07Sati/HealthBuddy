@@ -1,0 +1,349 @@
+{
+  "stage": "phi_tokenization",
+  "description": "Output of PHITokenizationAgent.tokenize() run on the OCR RawExtraction from 02_expected_ocr_output.json. Runs after OCR, before NER.",
+  "tokenized_extraction": {
+    "document_id": "11111111-1111-4111-8111-111111111111",
+    "spans": [
+      {
+        "text": "SUNRISE DIAGNOSTICS LABORATORY",
+        "confidence": 0.97,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "header"
+      },
+      {
+        "text": "[[PHI:ADDR:86836d5b-74ce-5e0c-ac0c-6c75322e0b1e]], Bengaluru, Karnataka 560001 | Phone: (080) 4123-9876 | CAP Accredited Lab #45219",
+        "confidence": 0.97,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "header"
+      },
+      {
+        "text": "LABORATORY REPORT",
+        "confidence": 0.97,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "header"
+      },
+      {
+        "text": "[[PHI:PATIENT:84937cd6-c060-5fc1-8cba-74c523706dcd]]",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "[[PHI:DOB:396c3871-4057-5379-906c-079b3a1fba94]]",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "[[PHI:AGE:3f17ea0f-d1b2-5085-b4b3-05453e06a42b]]",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "Sex: Male",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "[[PHI:PID:eba97064-574c-5a08-8682-23f5fc5ee98f]]",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "[[PHI:MRN:3b984055-8f41-5ec3-9362-02d9730530e6]]",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "[[PHI:HOSPID:fce1fc95-4285-58aa-bcb7-a83e792a0b30]]",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "Phone: [[PHI:PHONE:e6b95174-7476-549e-9ec0-9e1fa14cc0d1]]",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "Email: [[PHI:EMAIL:5f903daa-7355-54b2-81bb-b0819d2989fb]]",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "Address: [[PHI:ADDR:e7a78b9a-face-501b-8482-2ad655ca183a]], Bengaluru",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "[[PHI:AADHAAR:ae3803b0-b99f-5678-9054-7c34de7a7e0b]]",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "PAN: [[PHI:PAN:908631f0-0e22-5881-bb6a-cde8edfc6c08]]",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "Referring Physician: [[PHI:PATIENT:6c90b9f3-9ea0-565a-ad25-a3b9eb6ddd73]], MD, Nephrology",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "Physician License: KMC-88213",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "Specimen Collected: 02/07/2026 07:45",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "Report Date: 02/07/2026 11:20",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "COMPLETE BLOOD COUNT (CBC)",
+        "confidence": 0.97,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "header"
+      },
+      {
+        "text": "Hemoglobin: 13.8 g/dL  (Normal range: 12.0 - 17.5)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "Hematocrit: 41.2 %  (Normal range: 36 - 50)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "WBC: 7.2 10^3/uL  (Normal range: 4.5 - 11.0)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "Platelets: 265 10^3/uL  (Normal range: 150 - 450)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "RBC: 4.9 million/uL  (Normal range: 4.5 - 5.9)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "MCV: 88 fL  (Normal range: 80 - 100)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "MCH: 29.5 pg  (Normal range: 27 - 33)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "MCHC: 33.4 g/dL  (Normal range: 32 - 36)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "DIABETES MONITORING",
+        "confidence": 0.97,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "header"
+      },
+      {
+        "text": "HbA1c: 6.8 %  (Normal: below 5.7, Prediabetes: 5.7 - 6.4, Diabetes: 6.5 and above)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "RENAL FUNCTION PANEL",
+        "confidence": 0.97,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "header"
+      },
+      {
+        "text": "Creatinine: 1.4 mg/dL  (Normal range: 0.6 - 1.3)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "eGFR: 58 mL/min/1.73m2  (Normal: 90 and above)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "LIPID PROFILE",
+        "confidence": 0.97,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "header"
+      },
+      {
+        "text": "Total Cholesterol: 224 mg/dL  (Desirable: below 200)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "LDL: 142 mg/dL  (Optimal: below 100)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "HDL: 38 mg/dL  (Desirable: above 40)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "Triglycerides: 210 mg/dL  (Normal: below 150)",
+        "confidence": 0.9,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "table_cell"
+      },
+      {
+        "text": "Clinical Notes: Patient reports fatigue. No evidence of chest pain. Denies smoking.",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      },
+      {
+        "text": "Electronically verified by [[PHI:PATIENT:6c90b9f3-9ea0-565a-ad25-a3b9eb6ddd73]], MD. Not valid without laboratory letterhead and signature.",
+        "confidence": 0.93,
+        "bounding_box": null,
+        "page": 1,
+        "span_type": "text"
+      }
+    ],
+    "tables": [],
+    "full_text": "SUNRISE DIAGNOSTICS LABORATORY\n[[PHI:ADDR:86836d5b-74ce-5e0c-ac0c-6c75322e0b1e]], Bengaluru, Karnataka 560001 | Phone: (080) 4123-9876 | CAP Accredited Lab #45219\nLABORATORY REPORT\n[[PHI:PATIENT:84937cd6-c060-5fc1-8cba-74c523706dcd]]\n[[PHI:DOB:396c3871-4057-5379-906c-079b3a1fba94]]\n[[PHI:AGE:3f17ea0f-d1b2-5085-b4b3-05453e06a42b]]\nSex: Male\n[[PHI:PID:eba97064-574c-5a08-8682-23f5fc5ee98f]]\n[[PHI:MRN:3b984055-8f41-5ec3-9362-02d9730530e6]]\n[[PHI:HOSPID:fce1fc95-4285-58aa-bcb7-a83e792a0b30]]\nPhone: [[PHI:PHONE:e6b95174-7476-549e-9ec0-9e1fa14cc0d1]]\nEmail: [[PHI:EMAIL:5f903daa-7355-54b2-81bb-b0819d2989fb]]\nAddress: [[PHI:ADDR:e7a78b9a-face-501b-8482-2ad655ca183a]], Bengaluru\n[[PHI:AADHAAR:ae3803b0-b99f-5678-9054-7c34de7a7e0b]]\nPAN: [[PHI:PAN:908631f0-0e22-5881-bb6a-cde8edfc6c08]]\nReferring Physician: [[PHI:PATIENT:6c90b9f3-9ea0-565a-ad25-a3b9eb6ddd73]], MD, Nephrology\nPhysician License: KMC-88213\nSpecimen Collected: 02/07/2026 07:45\nReport Date: 02/07/2026 11:20\nCOMPLETE BLOOD COUNT (CBC)\nHemoglobin: 13.8 g/dL  (Normal range: 12.0 - 17.5)\nHematocrit: 41.2 %  (Normal range: 36 - 50)\nWBC: 7.2 10^3/uL  (Normal range: 4.5 - 11.0)\nPlatelets: 265 10^3/uL  (Normal range: 150 - 450)\nRBC: 4.9 million/uL  (Normal range: 4.5 - 5.9)\nMCV: 88 fL  (Normal range: 80 - 100)\nMCH: 29.5 pg  (Normal range: 27 - 33)\nMCHC: 33.4 g/dL  (Normal range: 32 - 36)\nDIABETES MONITORING\nHbA1c: 6.8 %  (Normal: below 5.7, Prediabetes: 5.7 - 6.4, Diabetes: 6.5 and above)\nRENAL FUNCTION PANEL\nCreatinine: 1.4 mg/dL  (Normal range: 0.6 - 1.3)\neGFR: 58 mL/min/1.73m2  (Normal: 90 and above)\nLIPID PROFILE\nTotal Cholesterol: 224 mg/dL  (Desirable: below 200)\nLDL: 142 mg/dL  (Optimal: below 100)\nHDL: 38 mg/dL  (Desirable: above 40)\nTriglycerides: 210 mg/dL  (Normal: below 150)\nClinical Notes: Patient reports fatigue. No evidence of chest pain. Denies smoking.\nElectronically verified by [[PHI:PATIENT:6c90b9f3-9ea0-565a-ad25-a3b9eb6ddd73]], MD. Not valid without laboratory letterhead and signature.",
+    "avg_confidence": 0.9258,
+    "low_confidence_spans": [],
+    "ocr_engine": "paddleocr",
+    "processing_time_ms": 842
+  },
+  "token_mapping": {
+    "[[PHI:ADDR:86836d5b-74ce-5e0c-ac0c-6c75322e0b1e]]": {
+      "value": "123 MG Road",
+      "category": "ADDRESS"
+    },
+    "[[PHI:PATIENT:84937cd6-c060-5fc1-8cba-74c523706dcd]]": {
+      "value": "Patient Name: Arjun Mehta",
+      "category": "NAME"
+    },
+    "[[PHI:DOB:396c3871-4057-5379-906c-079b3a1fba94]]": {
+      "value": "DOB: 14/03/1979",
+      "category": "DOB"
+    },
+    "[[PHI:AGE:3f17ea0f-d1b2-5085-b4b3-05453e06a42b]]": {
+      "value": "Age: 47 years old",
+      "category": "AGE"
+    },
+    "[[PHI:PID:eba97064-574c-5a08-8682-23f5fc5ee98f]]": {
+      "value": "Patient ID: PID-778812",
+      "category": "PATIENT_ID"
+    },
+    "[[PHI:MRN:3b984055-8f41-5ec3-9362-02d9730530e6]]": {
+      "value": "MRN: 8834127",
+      "category": "MRN"
+    },
+    "[[PHI:HOSPID:fce1fc95-4285-58aa-bcb7-a83e792a0b30]]": {
+      "value": "Hospital ID: HOSP-22190",
+      "category": "HOSPITAL_ID"
+    },
+    "[[PHI:PHONE:e6b95174-7476-549e-9ec0-9e1fa14cc0d1]]": {
+      "value": "(555) 291-4470",
+      "category": "PHONE"
+    },
+    "[[PHI:EMAIL:5f903daa-7355-54b2-81bb-b0819d2989fb]]": {
+      "value": "arjun.mehta@examplemail.com",
+      "category": "EMAIL"
+    },
+    "[[PHI:ADDR:e7a78b9a-face-501b-8482-2ad655ca183a]]": {
+      "value": "45 Residency Road",
+      "category": "ADDRESS"
+    },
+    "[[PHI:AADHAAR:ae3803b0-b99f-5678-9054-7c34de7a7e0b]]": {
+      "value": "Aadhaar: 4211 6690 3382",
+      "category": "AADHAAR"
+    },
+    "[[PHI:PAN:908631f0-0e22-5881-bb6a-cde8edfc6c08]]": {
+      "value": "BPMPM4821K",
+      "category": "PAN"
+    },
+    "[[PHI:PATIENT:6c90b9f3-9ea0-565a-ad25-a3b9eb6ddd73]]": {
+      "value": "Dr. Kavita Rao",
+      "category": "NAME"
+    }
+  }
+}

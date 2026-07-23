@@ -1,0 +1,74 @@
+# =============================================================================
+# LMIS .gitignore
+# =============================================================================
+
+# Environment variables — NEVER commit
+.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# HuggingFace / model cache
+.cache/
+backend/.cache/
+
+# Node.js
+node_modules/
+.next/
+out/
+.npm
+*.tsbuildinfo
+
+# Docker
+docker-compose.override.yml
+
+# Database
+*.db
+*.sqlite3
+
+# MinIO local data
+docker/minio_data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Alembic (don't ignore versions — they're migrations)
+alembic/versions/__pycache__/
+
+# Evaluation outputs
+evaluation/outputs/
+evaluation/results/
+
+# Real patient data — NEVER commit
+data/
+*.dcm
+*.hl7

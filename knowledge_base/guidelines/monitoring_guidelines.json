@@ -1,0 +1,161 @@
+{
+  "monitoring_guidelines": {
+    "diabetes_type2": {
+      "icd10_codes": ["E11", "E11.9"],
+      "display_name": "Type 2 Diabetes Mellitus",
+      "required_monitoring": [
+        {
+          "metric_code": "4548-4",
+          "metric_name": "HbA1c",
+          "interval_days": 90,
+          "interval_description": "Every 3 months if not at target; every 6 months if stable",
+          "stable_interval_days": 180,
+          "target": { "high": 7.0, "unit": "%", "note": "ADA 2024 target for most adults" },
+          "evidence_source": "ADA Standards of Care 2024, Section 6"
+        },
+        {
+          "metric_code": "2345-7",
+          "metric_name": "Fasting Glucose",
+          "interval_days": 90,
+          "interval_description": "At each diabetes visit",
+          "evidence_source": "ADA Standards of Care 2024"
+        },
+        {
+          "metric_code": "33914-3",
+          "metric_name": "eGFR",
+          "interval_days": 365,
+          "interval_description": "Annually to screen for diabetic nephropathy",
+          "evidence_source": "ADA Standards of Care 2024, Section 11"
+        },
+        {
+          "metric_code": "2089-1",
+          "metric_name": "LDL Cholesterol",
+          "interval_days": 365,
+          "interval_description": "Annually; at initiation of statin therapy",
+          "evidence_source": "ADA Standards of Care 2024, Section 10"
+        },
+        {
+          "metric_code": "8480-6",
+          "metric_name": "Blood Pressure",
+          "interval_days": 90,
+          "interval_description": "At every diabetes visit",
+          "target": { "systolic_high": 130, "diastolic_high": 80 },
+          "evidence_source": "ADA Standards of Care 2024, Section 10"
+        }
+      ]
+    },
+    "hypertension": {
+      "icd10_codes": ["I10"],
+      "display_name": "Essential Hypertension",
+      "required_monitoring": [
+        {
+          "metric_code": "8480-6",
+          "metric_name": "Systolic Blood Pressure",
+          "interval_days": 90,
+          "interval_description": "Every 3 months until controlled; every 6–12 months when stable",
+          "stable_interval_days": 180,
+          "evidence_source": "JNC 8 / ACC/AHA 2017 Guidelines"
+        },
+        {
+          "metric_code": "2823-3",
+          "metric_name": "Potassium",
+          "interval_days": 365,
+          "interval_description": "Annually; more frequent if on ACE inhibitor/ARB or diuretic",
+          "evidence_source": "ACC/AHA 2017"
+        },
+        {
+          "metric_code": "2160-0",
+          "metric_name": "Creatinine",
+          "interval_days": 365,
+          "interval_description": "Annually to monitor for hypertensive nephropathy",
+          "evidence_source": "ACC/AHA 2017"
+        }
+      ]
+    },
+    "ckd": {
+      "icd10_codes": ["N18", "N18.1", "N18.2", "N18.3", "N18.4", "N18.5", "N18.9"],
+      "display_name": "Chronic Kidney Disease",
+      "required_monitoring": [
+        {
+          "metric_code": "33914-3",
+          "metric_name": "eGFR",
+          "interval_days": 90,
+          "interval_description": "Every 3 months for G3b–G5; every 6 months for G2–G3a",
+          "by_stage": {
+            "G1-G2": { "interval_days": 365 },
+            "G3a": { "interval_days": 180 },
+            "G3b": { "interval_days": 90 },
+            "G4": { "interval_days": 90 },
+            "G5": { "interval_days": 90 }
+          },
+          "evidence_source": "KDIGO 2024 CKD Guidelines"
+        },
+        {
+          "metric_code": "2823-3",
+          "metric_name": "Potassium",
+          "interval_days": 90,
+          "interval_description": "Every 3 months in G3b+; hyperkalemia risk",
+          "evidence_source": "KDIGO 2024"
+        },
+        {
+          "metric_code": "718-7",
+          "metric_name": "Hemoglobin",
+          "interval_days": 90,
+          "interval_description": "Every 3 months; CKD-associated anemia monitoring",
+          "evidence_source": "KDIGO 2012 Anemia Guidelines"
+        }
+      ]
+    },
+    "hypothyroidism": {
+      "icd10_codes": ["E03", "E03.9"],
+      "display_name": "Hypothyroidism",
+      "required_monitoring": [
+        {
+          "metric_code": "3016-3",
+          "metric_name": "TSH",
+          "interval_days": 180,
+          "interval_description": "Every 6 months when stable on levothyroxine; every 6–8 weeks after dose change",
+          "dose_change_interval_days": 49,
+          "evidence_source": "ATA Guidelines 2014"
+        }
+      ]
+    },
+    "hyperlipidemia": {
+      "icd10_codes": ["E78", "E78.5"],
+      "display_name": "Hyperlipidemia",
+      "required_monitoring": [
+        {
+          "metric_code": "2089-1",
+          "metric_name": "LDL Cholesterol",
+          "interval_days": 365,
+          "interval_description": "Annually when stable on statin; 4–12 weeks after initiation/dose change",
+          "initiation_interval_days": 84,
+          "evidence_source": "ACC/AHA 2018 Cholesterol Guidelines"
+        },
+        {
+          "metric_code": "1742-6",
+          "metric_name": "ALT",
+          "interval_days": 365,
+          "interval_description": "Before and 12 weeks after statin initiation; annually thereafter",
+          "evidence_source": "ACC/AHA 2018"
+        }
+      ]
+    }
+  },
+  "critical_value_rules": [
+    { "metric_code": "718-7", "condition": "low", "threshold": 7.0, "unit": "g/dL", "action": "immediate_clinician_review", "reason": "Severe anemia — transfusion may be required" },
+    { "metric_code": "718-7", "condition": "high", "threshold": 20.0, "unit": "g/dL", "action": "immediate_clinician_review", "reason": "Polycythemia — thromboembolic risk" },
+    { "metric_code": "2823-3", "condition": "high", "threshold": 6.5, "unit": "mEq/L", "action": "immediate_clinician_review", "reason": "Severe hyperkalemia — cardiac arrhythmia risk" },
+    { "metric_code": "2823-3", "condition": "low", "threshold": 2.5, "unit": "mEq/L", "action": "immediate_clinician_review", "reason": "Severe hypokalemia — cardiac arrhythmia risk" },
+    { "metric_code": "2951-2", "condition": "low", "threshold": 120, "unit": "mEq/L", "action": "immediate_clinician_review", "reason": "Severe hyponatremia — neurological risk" },
+    { "metric_code": "2951-2", "condition": "high", "threshold": 160, "unit": "mEq/L", "action": "immediate_clinician_review", "reason": "Severe hypernatremia" },
+    { "metric_code": "2345-7", "condition": "low", "threshold": 50, "unit": "mg/dL", "action": "immediate_clinician_review", "reason": "Severe hypoglycemia — neurological emergency" },
+    { "metric_code": "2345-7", "condition": "high", "threshold": 500, "unit": "mg/dL", "action": "immediate_clinician_review", "reason": "Hyperglycemic crisis risk" },
+    { "metric_code": "33914-3", "condition": "low", "threshold": 15, "unit": "mL/min/1.73m2", "action": "immediate_clinician_review", "reason": "CKD Stage G5 — imminent kidney failure" },
+    { "metric_code": "8480-6", "condition": "high", "threshold": 180, "unit": "mmHg", "action": "immediate_clinician_review", "reason": "Hypertensive crisis" },
+    { "metric_code": "8480-6", "condition": "low", "threshold": 70, "unit": "mmHg", "action": "immediate_clinician_review", "reason": "Hypotensive shock risk" },
+    { "metric_code": "8867-4", "condition": "low", "threshold": 40, "unit": "bpm", "action": "immediate_clinician_review", "reason": "Severe bradycardia" },
+    { "metric_code": "8867-4", "condition": "high", "threshold": 150, "unit": "bpm", "action": "immediate_clinician_review", "reason": "Severe tachycardia" },
+    { "metric_code": "2708-6", "condition": "low", "threshold": 88, "unit": "%", "action": "immediate_clinician_review", "reason": "Critical hypoxemia" }
+  ]
+}
