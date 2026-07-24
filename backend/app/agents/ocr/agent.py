@@ -48,31 +48,73 @@ class OCRAgent:
                       f"'{envelope.storage_path}': {exc}")
             raise
 
-        try:
-            images = self._bytes_to_page_images(file_bytes)
-        except Exception as exc:
-            log.error(f"Failed to decode document {envelope.document_id} into page "
-                      f"images: {exc}")
-            return RawExtraction(
-                document_id=envelope.document_id,
-                spans=[],
-                tables=[],
-                full_text="",
-                avg_confidence=0.0,
-                low_confidence_spans=[],
-                ocr_engine="paddleocr",
-                processing_time_ms=int((time.time() - start) * 1000),
-            )
-
         all_spans: List[TextSpan] = []
-        for page_num, img in enumerate(images, start=1):
+        is_pdf = file_bytes[:4] == b"%PDF"
+
+        if is_pdf:
             try:
-                all_spans.extend(self._process_page(img, page_num))
+                doc = fitz.open(stream=file_bytes, filetype="pdf")
+                for page_num, page in enumerate(doc, start=1):
+                    words = page.get_text("words")
+                    if words and len(words) > 10:
+                        # Machine readable text found, bypass OCR for this page.
+                        # Preserve table layouts by grouping words by vertical Y-center.
+                        words.sort(key=lambda w: (round((w[1] + w[3]) / 2 / 5) * 5, (w[0] + w[2]) / 2))
+                        
+                        lines = []
+                        current_y_bucket = None
+                        current_line_words = []
+                        
+                        for w in words:
+                            y_center = (w[1] + w[3]) / 2
+                            y_bucket = round(y_center / 5) * 5
+                            
+                            if current_y_bucket is None:
+                                current_y_bucket = y_bucket
+                            
+                            if abs(y_bucket - current_y_bucket) <= 2:
+                                current_line_words.append(w[4])
+                            else:
+                                lines.append(" ".join(current_line_words))
+                                current_line_words = [w[4]]
+                                current_y_bucket = y_bucket
+                                
+                        if current_line_words:
+                            lines.append(" ".join(current_line_words))
+                            
+                        full_page_text = "\n".join(lines)
+                        all_spans.append(
+                            TextSpan(
+                                text=full_page_text,
+                                confidence=1.0,
+                                bounding_box=None,
+                                page=page_num,
+                                span_type="text"
+                            )
+                        )
+                        log.info(f"Page {page_num}: Bypassed OCR, used layout-preserved native text.")
+                    else:
+                        # Fallback to OCR for this page
+                        mat = fitz.Matrix(1.0, 1.0)
+                        pix = page.get_pixmap(matrix=mat, alpha=False)
+                        img_array = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, 3)
+                        img = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+                        try:
+                            all_spans.extend(self._process_page(img, page_num))
+                        except Exception as exc:
+                            log.error(f"OCR failed on page {page_num} of doc {envelope.document_id}: {exc}", exc_info=True)
+                doc.close()
             except Exception as exc:
-                # A single unreadable page shouldn't fail the whole
-                # document -- log it and keep going with the remaining pages.
-                log.error(f"OCR failed on page {page_num} of doc "
-                          f"{envelope.document_id}: {exc}", exc_info=True)
+                log.error(f"Failed to process PDF {envelope.document_id}: {exc}", exc_info=True)
+        else:
+            try:
+                arr = np.frombuffer(file_bytes, dtype=np.uint8)
+                img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+                if img is None:
+                    raise ValueError("Could not decode document bytes as image")
+                all_spans.extend(self._process_page(img, 1))
+            except Exception as exc:
+                log.error(f"Failed to decode or OCR image {envelope.document_id}: {exc}", exc_info=True)
 
         avg_confidence = (
             sum(s.confidence for s in all_spans) / len(all_spans) if all_spans else 0.0
@@ -83,8 +125,7 @@ class OCRAgent:
         full_text = "\n".join(s.text for s in all_spans)
 
         if not all_spans:
-            log.warning(f"OCR produced no text spans for doc {envelope.document_id} "
-                        f"({len(images)} page(s) processed)")
+            log.warning(f"OCR produced no text spans for doc {envelope.document_id}")
 
         return RawExtraction(
             document_id=envelope.document_id,
@@ -93,38 +134,9 @@ class OCRAgent:
             full_text=full_text,
             avg_confidence=round(avg_confidence, 4),
             low_confidence_spans=low_confidence,
-            ocr_engine="paddleocr",
+            ocr_engine="paddleocr+pymupdf",
             processing_time_ms=int((time.time() - start) * 1000),
         )
-
-    # ------------------------------------------------------------------ #
-    # Internals                                                          #
-    # ------------------------------------------------------------------ #
-    def _bytes_to_page_images(self, file_bytes: bytes) -> List[np.ndarray]:
-        """Convert document bytes to a list of BGR page images.
-        Uses PyMuPDF (fitz) for PDFs -- no Poppler dependency required.
-        Falls back to OpenCV for raw image files.
-        """
-        if file_bytes[:4] == b"%PDF":
-            doc = fitz.open(stream=file_bytes, filetype="pdf")
-            images = []
-            for page in doc:
-                # Render at 1x zoom for faster OCR (demo optimization)
-                mat = fitz.Matrix(1.0, 1.0)
-                pix = page.get_pixmap(matrix=mat, alpha=False)
-                img_array = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
-                    pix.height, pix.width, 3
-                )
-                # fitz returns RGB, OpenCV needs BGR
-                images.append(cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR))
-            doc.close()
-            return images
-
-        arr = np.frombuffer(file_bytes, dtype=np.uint8)
-        img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
-        if img is None:
-            raise ValueError("Could not decode document bytes as image or PDF")
-        return [img]
 
     def _process_page(self, img: np.ndarray, page: int) -> List[TextSpan]:
         quality, _ = prep.assess_quality(img)

@@ -289,6 +289,13 @@ class Orchestrator:
         if not entity_set:
             return
 
+        # Fetch document for date fallback
+        doc_id = state.get("document_id")
+        doc = await session.get(Document, UUID(doc_id)) if doc_id else None
+        doc_date = None
+        if doc:
+            doc_date = doc.document_date or doc.uploaded_at
+
         raw_by_temp_id = {e["temp_id"]: e for e in entity_set["entities"]}
         coded_by_temp_id = {c["temp_id"]: c for c in (coded_set or {}).get("coded_entities", [])}
 
@@ -311,7 +318,7 @@ class Orchestrator:
                 source_span_start=raw["source_span_start"],
                 source_span_end=raw["source_span_end"],
                 source_bounding_box=raw.get("source_bounding_box"),
-                entity_date=raw.get("entity_date"),
+                entity_date=raw.get("entity_date") or doc_date,
                 is_negated=raw["is_negated"],
                 assertion_status=raw["assertion_status"],
                 verification_status="unverified",

@@ -190,7 +190,7 @@ class KnowledgeAgent:
 
         for q in queries:
             try:
-                vector = embedding_service.embed_text(q.text, biomedical=True)
+                vector = embedding_service.embed_text(q.text, biomedical=False)
                 hits = await vector_store.search_knowledge_base(
                     query_vector=vector,
                     top_k=self.top_k,
@@ -232,15 +232,30 @@ class KnowledgeAgent:
             log.warning(f"Skipping knowledge-base hit {hit.get('id')} -- missing 'text' in payload")
             return None
 
-        source = payload.get("source") or "Unknown source"
-        title = payload.get("title") or source
-        section = payload.get("section")
+        # Support both the expected payload shape (guideline_id/title/source/section)
+        # and the actual ingested shape (condition/metric_name/evidence_source).
+        source = (
+            payload.get("source")
+            or payload.get("evidence_source")
+            or "Clinical Guideline"
+        )
+        title = (
+            payload.get("title")
+            or payload.get("display_name")
+            or payload.get("metric_name")
+            or payload.get("condition")
+            or source
+        )
+        section = payload.get("section") or payload.get("condition")
         guideline_id = payload.get("guideline_id") or str(hit.get("id"))
         category = payload.get("category") or query.category
         if category not in _VALID_CATEGORIES:
             category = query.category
 
-        citation = payload.get("citation") or (f"{source} -- {section}" if section else source)
+        citation = (
+            payload.get("citation")
+            or (f"{source} -- {section}" if section else source)
+        )
 
         return RankedKnowledgeCandidate(
             guideline_id=str(guideline_id),

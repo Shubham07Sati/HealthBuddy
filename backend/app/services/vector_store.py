@@ -42,13 +42,14 @@ class VectorStoreService:
 
     async def search_patient_history(self, patient_id: str, query_vector: List[float], top_k: int = 5) -> List[Dict[str, Any]]:
         col_name = self._get_patient_collection(patient_id)
-        results = await self.client.search(
+        results = await self.client.query_points(
             collection_name=col_name,
-            query_vector=query_vector,
+            query=query_vector,
             limit=top_k,
-            score_threshold=settings.retrieval_similarity_threshold
+            score_threshold=settings.retrieval_similarity_threshold,
+            with_payload=True,
         )
-        return [{"id": hit.id, "score": hit.score, "payload": hit.payload} for hit in results]
+        return [{"id": hit.id, "score": hit.score, "payload": hit.payload} for hit in results.points]
 
     async def search_knowledge_base(
         self,
@@ -74,13 +75,13 @@ class VectorStoreService:
                 must=[qmodels.FieldCondition(key="category", match=qmodels.MatchValue(value=category))]
             )
 
-        results = await self.client.search(
+        results = await self.client.query_points(
             collection_name=self.knowledge_col,
-            query_vector=query_vector,
+            query=query_vector,
             query_filter=query_filter,
             limit=top_k,
-            score_threshold=score_threshold if score_threshold is not None else settings.retrieval_similarity_threshold,
+            with_payload=True,
         )
-        return [{"id": hit.id, "score": hit.score, "payload": hit.payload} for hit in results]
+        return [{"id": hit.id, "score": hit.score, "payload": hit.payload} for hit in results.points]
 
 vector_store = VectorStoreService()

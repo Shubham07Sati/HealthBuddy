@@ -152,20 +152,16 @@ class NERAgent:
         out = []
         for match in self.ontology.find_labs(text):
             parsed = vp.parse_lab_value(text, match.end)
-            entity_end = parsed.match_end if parsed else match.end
+            if not parsed:
+                continue
+
+            entity_end = parsed.match_end
             is_short = len(match.matched_text) <= 3
 
-            if parsed:
-                ner_conf = _CONF_LONG_ALIAS_WITH_VALUE if not is_short else _CONF_SHORT_ALIAS_WITH_VALUE
-                raw_value = parsed.value
-                unit_raw = parsed.unit or match.unit_canonical
-                ambiguity_flag, ambiguity_reason = False, None
-            else:
-                ner_conf = _CONF_LONG_ALIAS_NO_VALUE if not is_short else _CONF_SHORT_ALIAS_NO_VALUE
-                raw_value = match.matched_text
-                unit_raw = None
-                ambiguity_flag = True
-                ambiguity_reason = "Lab name mentioned but no numeric result found nearby."
+            ner_conf = _CONF_LONG_ALIAS_WITH_VALUE if not is_short else _CONF_SHORT_ALIAS_WITH_VALUE
+            raw_value = parsed.value
+            unit_raw = parsed.unit or match.unit_canonical
+            ambiguity_flag, ambiguity_reason = False, None
 
             is_negated, status, fam_ambig, fam_reason = assertion_mod.classify_assertion(
                 sentences, match.start, entity_end
