@@ -176,7 +176,7 @@ class VerifiedInsight(BaseModel):
     final_text: str
     patient_facing_text: str
     clinician_facing_text: str
-    verification_status: VerificationStatus
+    verification_status: str
     verification_confidence: float
     verification_rationale: str
     atomic_assertions: List[AtomicAssertion]
