@@ -29,20 +29,26 @@ LMIS is a multi-agent AI architecture designed for clinical document understandi
 
 1. Copy the environment variables template:
    ```bash
+   cd backend
    cp .env.example .env
    ```
-2. Add your LLM API keys to the `.env` file (e.g., `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`).
+2. Add your LLM API keys to the `backend/.env` file (e.g., `GOOGLE_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`).
 3. Start the infrastructure (Postgres, Redis, MinIO, Qdrant):
    ```bash
-   docker-compose up -d postgres redis minio qdrant
+   docker-compose up -d
    ```
-4. Start the backend:
+4. Start the FastAPI backend:
    ```bash
    cd backend
    pip install -r requirements.txt
-   uvicorn app.main:app --reload
+   python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
    ```
-5. Start the frontend:
+5. Start the Celery worker (required for document processing):
+   ```bash
+   cd backend
+   celery -A app.worker.celery_app worker --loglevel=info --pool=solo
+   ```
+6. Start the frontend:
    ```bash
    cd frontend
    npm install
