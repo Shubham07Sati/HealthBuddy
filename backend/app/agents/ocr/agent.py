@@ -109,8 +109,8 @@ class OCRAgent:
             doc = fitz.open(stream=file_bytes, filetype="pdf")
             images = []
             for page in doc:
-                # Render at 2x zoom for better OCR accuracy
-                mat = fitz.Matrix(2.0, 2.0)
+                # Render at 1x zoom for faster OCR (demo optimization)
+                mat = fitz.Matrix(1.0, 1.0)
                 pix = page.get_pixmap(matrix=mat, alpha=False)
                 img_array = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
                     pix.height, pix.width, 3
@@ -133,7 +133,7 @@ class OCRAgent:
         spans: List[TextSpan] = []
         applied_steps: List[str] = []
 
-        for attempt in range(3):  # initial try + 2 escalating retries
+        for attempt in range(1):  # initial try only (demo optimization)
             if attempt == 1:
                 working_img = prep.deskew(working_img)
                 applied_steps.append("deskew")
