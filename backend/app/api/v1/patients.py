@@ -41,8 +41,7 @@ async def get_patient_summary(
     recent_insights = []
     for ri in recent_insights_rows:
         recent_insights.append({
-            "insight_type": ri.insight_type.value if ri.insight_type else "general",
-            "patient_facing_text": ri.patient_facing_text or ri.draft_text,
+            "patient_facing_text": ri.patient_facing_text or ri.final_text or ri.draft_text,
             "severity": ri.severity.value if ri.severity else "informational"
         })
 
@@ -116,7 +115,7 @@ async def get_patient_timeline(
             "id": str(e.id),
             "date": date_str,
             "type": e.entity_type.value if hasattr(e.entity_type, "value") else str(e.entity_type),
-            "label": e.normalized_value or e.raw_value,
+            "label": e.entity_label or e.entity_type.value.replace("_", " ").title(),
             "value": e.normalized_value or e.raw_value,
             "unit": e.unit_canonical or e.unit_raw or "",
             "status": "normal",

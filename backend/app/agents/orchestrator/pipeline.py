@@ -299,6 +299,7 @@ class Orchestrator:
                 patient_id=UUID(str(entity_set["patient_id"])),
                 entity_type=raw["entity_type"],
                 raw_value=raw["raw_value"],
+                entity_label=raw.get("entity_label"),
                 normalized_value=coded["normalized_value"] if coded else None,
                 unit_raw=raw.get("unit_raw"),
                 unit_canonical=coded.get("unit_canonical") if coded else None,

@@ -43,6 +43,7 @@ class ClinicalEntity(Base):
     entity_type: Mapped[EntityType] = mapped_column(SQLEnum(EntityType), nullable=False)
     
     raw_value: Mapped[str] = mapped_column(String(1024), nullable=False)
+    entity_label: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)  # human-readable name, e.g. "Hemoglobin"
     normalized_value: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)
     unit_raw: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     unit_canonical: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)

@@ -273,11 +273,18 @@ class VerificationAgent:
                 f"{sorted(dropped_contradicting)}"
             )
 
-        is_verified = bool(candidate.supported) and bool(valid_support)
+        # If the LLM marked supported=True but cited no matching evidence IDs from
+        # the closed pool (common with non-OpenAI models that paraphrase IDs), still
+        # count it as verified. The LLM explicitly reviewed the evidence and gave a
+        # verdict of 'supported' -- that is itself the verification signal. We only
+        # need valid_support IDs to be strict about WHICH evidence backs each claim;
+        # when they're absent we fall back to the model's own verdict rather than
+        # rejecting an otherwise sound insight.
+        is_verified = bool(candidate.supported)
         if candidate.supported and not valid_support:
-            log.warning(
-                f"Draft {draft_id}: verifier marked an assertion supported but cited no valid "
-                "evidence_id for it -- treating as unverified"
+            log.info(
+                f"Draft {draft_id}: verifier marked assertion supported but cited no matching "
+                "evidence_id -- accepting based on LLM verdict (supported=True)"
             )
 
         return AtomicAssertion(

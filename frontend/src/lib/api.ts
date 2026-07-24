@@ -1,6 +1,6 @@
 import { UserResponse, DocumentUploadResponse, PipelineStatusResponse, TimelineResponse, TrendSet, InsightListResponse, PatientSummary, ReviewQueueResponse, Patient, CorrectionQueueItem, AuditEvent } from '@/types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 const API_V1 = `${API_BASE}/api/v1`;
 
 class ApiError extends Error {

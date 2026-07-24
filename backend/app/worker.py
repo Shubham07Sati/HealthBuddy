@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from celery import Celery
+from celery.exceptions import SoftTimeLimitExceeded
 from app.core.config import get_settings
 from app.agents.orchestrator.pipeline import orchestrator
 from app.schemas.agent_messages import DocumentEnvelope
@@ -23,7 +24,36 @@ celery_app.conf.update(
     result_serializer="json",
     timezone="UTC",
     enable_utc=True,
-    worker_concurrency=4
+    worker_concurrency=4,
+
+    # ROOT-CAUSE FIX: the celery_worker container (see docker-compose.yml)
+    # is started with `-Q lmis_pipeline,lmis_ocr,lmis_ner,lmis_reasoning`
+    # -- it never subscribes to Celery's default queue, "celery". Every
+    # call site in this codebase publishes via `.delay(...)`, which without
+    # an explicit route always lands on that default "celery" queue. The
+    # result: tasks are accepted by Redis but no worker ever consumes them,
+    # so `process_document_pipeline` (and any task) sits queued forever --
+    # no exception, no timeout, no log line, just an upload that "hangs".
+    #
+    # task_routes pins this task onto a queue the worker actually reads
+    # from. task_default_queue is also set so any *future* task added
+    # without an explicit route fails the same way visibly (never
+    # consumed, but at least consistent) rather than silently, and so a
+    # bare `-Q` invocation without this task in task_routes still works.
+    task_default_queue="lmis_pipeline",
+    task_routes={
+        "process_document_pipeline": {"queue": "lmis_pipeline"},
+    },
+
+    # Belt-and-suspenders: if a single document ever *does* wedge inside
+    # an agent call (e.g. an LLM provider hangs with no timeout of its
+    # own), this guarantees the worker kills the task instead of the
+    # whole worker process going silently unresponsive. soft_time_limit
+    # raises SoftTimeLimitExceeded first so the task can flag the
+    # document as failed in the DB (see error_handler below); time_limit
+    # is the hard kill a few seconds later if that doesn't work.
+    task_soft_time_limit=600,
+    task_time_limit=630,
 )
 
 def run_async(coro):
@@ -59,7 +89,56 @@ def process_document_pipeline(envelope_data: dict, patient_id: str):
         final_state = run_async(orchestrator.run_pipeline(initial_state))
         log.info(f"Pipeline completed successfully for doc {envelope_data.get('document_id')}")
         return final_state
-    except Exception as e:
-        log.error(f"Pipeline failed: {str(e)}")
-        # In a real app, update Document status to failed in DB
+    except SoftTimeLimitExceeded:
+        # task_soft_time_limit (see celery_app.conf above) tripped -- an
+        # agent call hung well past any reasonable processing time (e.g.
+        # an LLM provider with no client-side timeout of its own). Mark
+        # the document failed so the frontend stops polling forever,
+        # then re-raise so Celery still records the task itself as failed.
+        log.error(f"Pipeline for doc {envelope_data.get('document_id')} exceeded "
+                  f"soft time limit ({celery_app.conf.task_soft_time_limit}s) -- "
+                  f"marking document as failed")
+        run_async(_mark_document_failed(envelope_data.get("document_id"),
+                                         "Processing exceeded time limit"))
         raise
+    except Exception as e:
+        log.error(f"Pipeline failed for doc {envelope_data.get('document_id')}: {e}",
+                  exc_info=True)
+        # Previously this just logged and re-raised with no DB write --
+        # any exception raised BEFORE orchestrator.run_pipeline reaches
+        # its own try/except per-node handling (e.g. run_pipeline itself
+        # failing to start, a serialization error in initial_state, an
+        # error thrown by the LangGraph checkpointer) left the Document
+        # row stuck at its last status forever, since node_error_handler
+        # inside the graph never got a chance to run. Persist failure
+        # here too so this class of error is never silent.
+        run_async(_mark_document_failed(envelope_data.get("document_id"), str(e)))
+        raise
+
+
+async def _mark_document_failed(document_id: str, reason: str) -> None:
+    """Best-effort write of a terminal failed status, used only for
+    failures that happen outside the LangGraph graph's own error
+    handling (see node_error_handler in orchestrator/pipeline.py for
+    the normal path)."""
+    if not document_id:
+        return
+    try:
+        from uuid import UUID
+        from datetime import datetime, timezone
+        from app.services.database import async_session_maker
+        from app.models.document import Document, ProcessingStatus
+
+        async with async_session_maker() as session:
+            doc = await session.get(Document, UUID(document_id))
+            if doc is None:
+                log.warning(f"Document {document_id} not found while persisting "
+                            f"failure status")
+                return
+            doc.processing_status = ProcessingStatus.failed
+            doc.processed_at = datetime.now(timezone.utc)
+            await session.commit()
+    except Exception:
+        log.exception(f"Failed to persist failure status for document "
+                       f"{document_id} (reason was: {reason}) -- DB may be "
+                       f"unreachable")

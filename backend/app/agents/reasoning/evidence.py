@@ -49,12 +49,13 @@ def build_observation_evidence(
 
     for coded in coded_set.coded_entities:
         raw = raw_by_temp_id.get(coded.temp_id)
-        if raw is None or not coded.canonical_code:
+        if raw is None:
             continue
 
         entity_id = _entity_id_for(entity_set.document_id, coded.temp_id)
+        entity_name = raw.entity_label or (raw.entity_type.value if hasattr(raw.entity_type, "value") else str(raw.entity_type))
         value_txt = coded.normalized_value or raw.raw_value
-        unit_txt = f" {coded.unit_canonical}" if coded.unit_canonical else ""
+        unit_txt = f" {coded.unit_canonical}" if coded.unit_canonical else (f" {raw.unit_raw}" if raw.unit_raw else "")
         date_txt = f" on {raw.entity_date.date().isoformat()}" if raw.entity_date else ""
         range_txt = ""
         if coded.reference_range_low is not None and coded.reference_range_high is not None:
@@ -63,11 +64,12 @@ def build_observation_evidence(
                 f"{' ' + coded.reference_range_unit if coded.reference_range_unit else ''})"
             )
         negation_txt = " [negated / not present]" if raw.is_negated else ""
+        code_txt = f"[{coded.coding_system or 'uncoded'} {coded.canonical_code}]" if coded.canonical_code else "[uncoded]"
 
         text = (
-            f"{raw.entity_type.value if hasattr(raw.entity_type, 'value') else raw.entity_type}: "
+            f"{entity_name}: "
             f"{value_txt}{unit_txt}{date_txt}{range_txt} "
-            f"[{coded.coding_system or 'uncoded'} {coded.canonical_code}]{negation_txt}"
+            f"{code_txt}{negation_txt}"
         )
 
         entries.append(
@@ -77,6 +79,27 @@ def build_observation_evidence(
                 source_ref=str(entity_set.document_id),
                 text=text,
                 relevance_score=coded.coding_confidence,
+                entity_ids=[str(entity_id)],
+            )
+        )
+
+    # Also include entities that NER found but Normalization couldn't code
+    coded_temp_ids = {c.temp_id for c in coded_set.coded_entities}
+    for raw in entity_set.entities:
+        if raw.temp_id in coded_temp_ids:
+            continue  # already handled above
+        entity_id = _entity_id_for(entity_set.document_id, raw.temp_id)
+        entity_name = raw.entity_label or (raw.entity_type.value if hasattr(raw.entity_type, "value") else str(raw.entity_type))
+        unit_txt = f" {raw.unit_raw}" if raw.unit_raw else ""
+        negation_txt = " [negated / not present]" if raw.is_negated else ""
+        text = f"{entity_name}: {raw.raw_value}{unit_txt} [uncoded]{negation_txt}"
+        entries.append(
+            EvidencePoolEntry(
+                evidence_id=f"obs-{raw.temp_id}",
+                source_type="pso_entity",
+                source_ref=str(entity_set.document_id),
+                text=text,
+                relevance_score=raw.combined_confidence,
                 entity_ids=[str(entity_id)],
             )
         )
