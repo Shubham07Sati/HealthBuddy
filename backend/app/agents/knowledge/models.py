@@ -1,6 +1,4 @@
 """
-Internal (non-shared) data structures for Agent 8: Knowledge Retrieval.
-
 These are helper types scoped to this agent's own query-planning and
 ranking logic -- not inter-agent contracts, so they live here rather than
 in app/schemas/agent_messages.py. The one type other agents actually
